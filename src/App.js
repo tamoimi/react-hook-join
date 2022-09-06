@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import "./App.css";
 
@@ -6,12 +6,16 @@ function App() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({
     mode: "onChange",
   });
   const onSubmit = (data) => console.log(data);
   const [isFullInput, setIsFullInput] = useState(false);
+
+  const password = useRef({});
+  password.current = watch("password", "");
 
   return (
     <>
@@ -31,28 +35,36 @@ function App() {
             })}
             placeholder="이름을 입력해주세요."
           />
-          {errors.username && (
-            <p style={{ color: "red", fontSize: "10px" }}>
-              {errors.username.message}
-            </p>
-          )}
+          {errors.username && <p>{errors.username.message}</p>}
 
           <label htmlFor="id">아이디</label>
           <input
             type="text"
-            {...register("id")}
+            {...register("id", {
+              required: "아이디를 입력해주세요.",
+            })}
             placeholder="아이디를 입력해주세요."
           />
+
+          <label htmlFor="email">이메일</label>
+          <input 
+            type="text"
+            {...register("email", {
+              required: "이메일은 필수 값입니다.",
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: "이메일 형식에 맞지 않습니다.",
+              },
+              })} 
+            placeholder="이메일을 입력해주세요."
+          />
+          {errors.email && <p>{errors.email.message}</p>}
 
           <label htmlFor="password">비밀번호</label>
           <input
             type="password"
             {...register("password", {
               required: "비밀번호는 필수 값입니다.",
-              pattern: {
-                value: /^[a-zA-Z]*$/,
-                message: "비밀번호는 영어만 가능합니다.",
-              },
               minLength: {
                 value: 6,
                 message: "비밀번호는 6자 이상 입력해주세요.",
@@ -67,6 +79,17 @@ function App() {
           {errors.password && (
             <span>비밀번호는 6자 12자 이하로 입력하세요.</span>
           )}
+
+          <label htmlFor="password_repeat"></label>
+          <input
+            type="password"
+            {...register("password_repeat", {
+              validate: (value) =>
+                value === password.current || "비밀번호가 맞지 않습니다",
+            })}
+            placeholder="비밀번호를 입력해주세요."
+          />
+          {errors.password_repeat && <span>비밀번호를 다시 입력해주세요.</span>}
 
           {isFullInput ? (
             <input

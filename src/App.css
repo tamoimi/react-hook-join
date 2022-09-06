@@ -5,7 +5,13 @@
   margin-top: 50px;
   text-align: center;
 }
-
+label {
+  font-size: 14px;
+  font-weight: bolder;
+}
+::placeholder {
+  font-size: 12px;
+}
 input {
   display: block;
   width: 300px;
@@ -24,4 +30,9 @@ h1 {
   margin-top: 50px;
   width: 200px; height: 60px;
   background-color: #999;
+}
+p,
+span {
+  color: red;
+  font-size: 12px;
 }
